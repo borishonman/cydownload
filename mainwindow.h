@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    typedef enum _Downloading {RELEASE=0, PACKAGES, PACKAGE, NONE} Downloading;
+    typedef enum _Downloading {RELEASE=0, RELEASE_DEBIAN, PACKAGES, PACKAGES_DEBIAN, PACKAGE, NONE} Downloading;
 
 public:
     explicit MainWindow(QWidget *parent = 0);

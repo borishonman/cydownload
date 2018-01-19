@@ -60,6 +60,21 @@ void MainWindow::downloadComplete(bool success)
     {
     case RELEASE:
         if (!success)
+        {
+            Logger::log("No Release file, trying debian structure");
+            m_dl->startDownload(helpers::urlCombine(m_url, "dists/stable/main/binary-iphoneos-arm/Release"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Release"));
+            m_dling = RELEASE_DEBIAN;
+            break;
+        }
+        else
+            Logger::log("Done");
+        //start downloading the package list
+        Logger::log("Getting package list...");
+        m_dling = PACKAGES;
+        m_dl->startDownload(helpers::urlCombine(m_url, "Packages.bz2"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.bz2"));
+        break;
+    case RELEASE_DEBIAN:
+        if (!success)
             Logger::log("No Release file, repo information will be blank");
         else
             Logger::log("Done");
@@ -69,6 +84,24 @@ void MainWindow::downloadComplete(bool success)
         m_dl->startDownload(helpers::urlCombine(m_url, "Packages.bz2"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.bz2"));
         break;
     case PACKAGES:
+        if (!success)
+        {
+            Logger::log("Packages.bz2 not found, trying debian structure");
+            m_dling = PACKAGES_DEBIAN;
+            m_dl->startDownload(helpers::urlCombine(m_url, "dists/stable/main/binary-iphoneos-arm/Packages.bz2"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.bz2"));
+            break;
+        }
+        //extract the Packages list
+        if (!helpers::decompress(QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.bz2"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages")))
+        {
+            Logger::log("Error extracting Packages.bz2");
+            break;
+        }
+        Logger::log("Done");
+        repoInfoDownloaded();
+        m_dling = PACKAGE;
+        break;
+    case PACKAGES_DEBIAN:
         if (!success)
         {
             Logger::log("Not a valid Cydia repository!");
