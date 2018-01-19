@@ -27,6 +27,8 @@ private:
     QNetworkAccessManager* m_manager;
     QNetworkReply* m_reply;
     QFile* m_file;
+
+    QNetworkRequest getRequest(QUrl url);
 };
 
 #endif // DOWNLOADER_H

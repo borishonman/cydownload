@@ -27,7 +27,7 @@ void Downloader::startDownload(QString url, QString filePath)
     }
 
     //create a network request to download stuff
-    m_reply = m_manager->get(QNetworkRequest(url));
+    m_reply = m_manager->get(getRequest(url));
 
     //connect the signals to monitor the download
     m_mainWindow->connect(m_reply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
@@ -45,7 +45,6 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
 {
     if (totalBytes < 1)
     { //unable to determine file size, so display a busy indicator
-        Logger::log("could not find size");
         m_progBar->setMinimum(0);
         m_progBar->setMaximum(0);
         return;
@@ -73,7 +72,7 @@ void Downloader::httpDownloadFinished()
         m_file->resize(0);
         //create a network request to download stuff
         m_manager = new QNetworkAccessManager();
-        m_reply = m_manager->get(QNetworkRequest(newUrl));
+        m_reply = m_manager->get(getRequest(newUrl));
         m_mainWindow->connect(m_reply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
         m_mainWindow->connect(m_reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateDownloadProgress(qint64,qint64)));
         m_mainWindow->connect(m_reply, SIGNAL(finished()), this, SLOT(httpDownloadFinished()));
@@ -94,4 +93,14 @@ void Downloader::httpDownloadFinished()
     m_file = 0;
 
     downloadComplete(success);
+}
+
+QNetworkRequest Downloader::getRequest(QUrl url)
+{
+    QNetworkRequest req(url);
+    req.setRawHeader("X-Machine", "iPhone6,1");
+    req.setRawHeader("X-Unique-ID", "8843d7f92416211de9ebb963ff4ce28125932878");
+    req.setRawHeader("X-Firmware", "10.1.1");
+    req.setRawHeader("User-Agent", "Telesphoreo APT-HTTP/1.0.592");
+    return req;
 }
