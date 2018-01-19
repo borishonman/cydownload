@@ -131,6 +131,16 @@ void MainWindow::repoInfoDownloaded()
     QString releaseFile = QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Release");
     QString packagesFile = QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages");
 
+    //wipe any old release data
+    m_repo.origin = "";
+    m_repo.label = "";
+    m_repo.suite = "";
+    m_repo.version = "";
+    m_repo.codename = "";
+    m_repo.architectures = "";
+    m_repo.components = "";
+    m_repo.description = "";
+
     //parse the Release file, if it exists
     if (QFile::exists(releaseFile))
     {
@@ -238,6 +248,7 @@ void MainWindow::repoInfoDownloaded()
     delete pFile;
 
     //now split the packages into sections
+    m_sections.empty();
     for (unsigned long i=0;i<m_packages.size();i++)
     {
         QString secName = m_packages[i].section;
