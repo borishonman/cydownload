@@ -74,6 +74,9 @@ void Downloader::httpDownloadFinished()
         //create a network request to download stuff
         m_manager = new QNetworkAccessManager();
         m_reply = m_manager->get(QNetworkRequest(newUrl));
+        m_mainWindow->connect(m_reply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
+        m_mainWindow->connect(m_reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateDownloadProgress(qint64,qint64)));
+        m_mainWindow->connect(m_reply, SIGNAL(finished()), this, SLOT(httpDownloadFinished()));
         return;
     }
 
