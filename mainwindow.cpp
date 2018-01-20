@@ -1,4 +1,5 @@
 #include <QMessageBox>
+#include <QStandardPaths>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "helpers.h"
@@ -29,29 +30,31 @@ MainWindow::MainWindow(QWidget *parent) :
         b.exec();
         exit(1);
     }
+
+    //get the path to the data directory, create it if not exists
+    m_dataDir = DATA_DIR;
+    if (!QDir(m_dataDir).exists())
+        QDir().mkdir(m_dataDir);
+
+    //read the saved repo URLs
+    QFile f(REPO_URL_FILE_PATH);
+    if (f.exists() && f.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        ui->cmb_repo_urls->insertItem(0, "Select a Repository");
+        while (!f.atEnd())
+        {
+            QString curUrl = f.readLine().trimmed();
+            ui->cmb_repo_urls->insertItem(1, curUrl);
+        }
+        f.close();
+        ui->cmb_repo_urls->setCurrentIndex(0);
+    }
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete m_dl;
-}
-
-void MainWindow::dialogrepo_accepted()
-{
-    QString networkUrl, fileUrl;
-
-    //get the URL of the repo to connect to
-    QString repoUrl = m_dr->getText();
-
-    /**Download Release**/
-        networkUrl = helpers::urlCombine(repoUrl, "Release");
-        fileUrl = QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Release");
-
-        //start the download
-        Logger::log("Getting repo information...");
-        m_dling = RELEASE;
-        m_dl->startDownload(networkUrl, fileUrl);
 }
 
 void MainWindow::downloadComplete(bool success)
@@ -274,11 +277,59 @@ void MainWindow::repoInfoDownloaded()
     delete rd;
 }
 
-void MainWindow::on_btn_open_clicked()
+void MainWindow::on_btn_open_repo_clicked()
+{
+    QString networkUrl, fileUrl;
+
+    //get the URL of the repo to connect to
+    m_url = ui->cmb_repo_urls->currentText();
+
+    /**Download Release**/
+        networkUrl = helpers::urlCombine(m_url, "Release");
+        fileUrl = QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Release");
+
+        //start the download
+        Logger::log("Getting repo information...");
+        m_dling = RELEASE;
+        m_dl->startDownload(networkUrl, fileUrl);
+}
+
+void MainWindow::on_btn_new_repo_clicked()
 {
     m_dr = new dialogrepo();
-    connect(m_dr, SIGNAL(accepted()), this, SLOT(dialogrepo_accepted()));
     m_dr->exec();
-    m_url = m_dr->getText();
+
+    //add to the combo box
+    ui->cmb_repo_urls->insertItem(ui->cmb_repo_urls->count(), m_dr->getText());
+    ui->cmb_repo_urls->setCurrentIndex(ui->cmb_repo_urls->count()-1);
+
+    //write it to the file
+    helpers::addRepoToFile(m_dr->getText(), REPO_URL_FILE_PATH);
+
     delete m_dr;
+}
+
+void MainWindow::on_cmb_repo_urls_currentIndexChanged(int index)
+{
+    if (index == 0 || index == -1)
+    {
+        ui->btn_open_repo->setEnabled(false);
+        ui->btn_del_repo->setEnabled(false);
+        return;
+    }
+
+    ui->btn_open_repo->setEnabled(true);
+    ui->btn_del_repo->setEnabled(true);
+}
+
+void MainWindow::on_btn_del_repo_clicked()
+{
+    QString url = ui->cmb_repo_urls->currentText();
+
+    //remove the entry from the combo box
+    ui->cmb_repo_urls->removeItem(ui->cmb_repo_urls->currentIndex());
+    ui->cmb_repo_urls->setCurrentIndex(0);
+
+    //remove it from the file too
+    helpers::delRepoFromFile(url, REPO_URL_FILE_PATH);
 }

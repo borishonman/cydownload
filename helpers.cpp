@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include <QFile>
+#include <QTextStream>
 #include <stdlib.h>
 #include "bzip2/bzlib.h"
 
@@ -88,4 +89,53 @@ QString helpers::bytesToHuman(qint64 sz)
         return QString::number(mb, 'f', 2) + " MB";
 
     return QString::number(mb / 1024.0f, 'f', 2) + " GB";
+}
+
+void helpers::addRepoToFile(QString url, QString file)
+{
+    QFile f(file);
+
+    //open the file for writing+append
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
+        return;
+
+    //write to the file
+    QTextStream stream( &f );
+    stream << url << endl;
+
+    //close the file
+    stream.flush();
+    f.flush();
+    f.close();
+}
+void helpers::delRepoFromFile(QString url, QString file)
+{
+    QFile f(file);
+    std::vector<QString> lines;
+
+    //open the file for reading
+    if (!f.open(QIODevice::ReadWrite | QIODevice::Text))
+        return;
+
+    //read the text from the file
+    QTextStream in(&f);
+    while(!in.atEnd())
+    {
+        QString l = in.readLine();
+        if (l != url)
+            lines.push_back(l);
+    }
+    in.flush();
+
+    //write the text back to the file
+    f.resize(0);
+    QTextStream out( &f );
+    for (unsigned long i=0;i<lines.size();i++)
+    {
+        out << lines[i] << endl;
+    }
+    out.flush();
+
+    //close the file
+    f.close();
 }

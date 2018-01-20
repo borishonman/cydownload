@@ -24,10 +24,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void dialogrepo_accepted();
     void downloadComplete(bool success);
 
-    void on_btn_open_clicked();
+    void on_btn_open_repo_clicked();
+
+    void on_btn_new_repo_clicked();
+
+    void on_cmb_repo_urls_currentIndexChanged(int index);
+
+    void on_btn_del_repo_clicked();
 
 private:
     void repoInfoDownloaded();
@@ -35,6 +40,7 @@ private:
     dialogrepo *m_dr;
     QTemporaryDir m_tmpDir;
     QString m_url;
+    QString m_dataDir;
     Downloader *m_dl;
     Downloading m_dling;
     Repo m_repo;
