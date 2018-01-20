@@ -57,8 +57,11 @@ void Downloader::updateDownloadProgress(qint64 bytesRead, qint64 totalBytes)
 
 void Downloader::httpDownloadFinished()
 {
+    QString errMsg = "";
+
     //close the file
     m_progBar->setValue(0);
+    m_progBar->setMaximum(100);
     m_file->flush();
     m_file->close();
 
@@ -84,7 +87,7 @@ void Downloader::httpDownloadFinished()
     { //something bad happened
         success = false;
         m_file->remove();
-        Logger::log("Error: " + m_reply->errorString());
+        errMsg = m_reply->errorString();
     }
 
     m_reply->deleteLater();
@@ -92,7 +95,7 @@ void Downloader::httpDownloadFinished()
     delete m_file;
     m_file = 0;
 
-    downloadComplete(success);
+    downloadComplete(success, errMsg);
 }
 
 QNetworkRequest Downloader::getRequest(QUrl url)

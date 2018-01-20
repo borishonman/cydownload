@@ -16,7 +16,7 @@ public:
     ~Downloader();
     void startDownload(QString url, QString filePath);
 signals:
-    void downloadComplete(bool success);
+    void downloadComplete(bool success, QString errMsg);
 private slots:
     void httpReadyRead();
     void updateDownloadProgress(qint64 bytesRead, qint64 totalBytes);

@@ -24,7 +24,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void downloadComplete(bool success);
+    void downloadComplete(bool success, QString errMsg);
 
     void on_btn_open_repo_clicked();
 

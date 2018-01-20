@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //initialize the downloader
     m_dl = new Downloader(this, ui->progressBar);
-    connect(m_dl, SIGNAL(downloadComplete(bool)), this, SLOT(downloadComplete(bool)));
+    connect(m_dl, SIGNAL(downloadComplete(bool,QString)), this, SLOT(downloadComplete(bool,QString)));
 
     //initialize the download tracker
     m_dling = NONE;
@@ -57,14 +57,13 @@ MainWindow::~MainWindow()
     delete m_dl;
 }
 
-void MainWindow::downloadComplete(bool success)
+void MainWindow::downloadComplete(bool success, QString errMsg)
 {
     switch (m_dling)
     {
     case RELEASE:
         if (!success)
         {
-            Logger::log("No Release file, trying debian structure");
             m_dl->startDownload(helpers::urlCombine(m_url, "dists/stable/main/binary-iphoneos-arm/Release"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Release"));
             m_dling = RELEASE_DEBIAN;
             break;
@@ -78,7 +77,7 @@ void MainWindow::downloadComplete(bool success)
         break;
     case RELEASE_DEBIAN:
         if (!success)
-            Logger::log("No Release file, repo information will be blank");
+            Logger::log("No Release file could be found, repo information will be blank");
         else
             Logger::log("Done");
         //start downloading the package list
@@ -89,7 +88,6 @@ void MainWindow::downloadComplete(bool success)
     case PACKAGES:
         if (!success)
         {
-            Logger::log("Packages.bz2 not found, trying debian structure");
             m_dling = PACKAGES_DEBIAN;
             m_dl->startDownload(helpers::urlCombine(m_url, "dists/stable/main/binary-iphoneos-arm/Packages.bz2"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.bz2"));
             break;
@@ -107,6 +105,7 @@ void MainWindow::downloadComplete(bool success)
     case PACKAGES_DEBIAN:
         if (!success)
         {
+            Logger::log(errMsg);
             Logger::log("Not a valid Cydia repository!");
             m_dling = NONE;
             break;
