@@ -25,7 +25,7 @@ void RepoDialog::initialize(Repo repo, SectionList sections)
     m_repo = repo;
     m_sections = sections;
     m_dler = new Downloader((QMainWindow*)parent(), ui->progressBar);
-    connect(m_dler, SIGNAL(downloadComplete(bool)), this, SLOT(downloadComplete(bool)));
+    connect(m_dler, SIGNAL(downloadComplete(bool, QString)), this, SLOT(downloadComplete(bool, QString)));
     setWindowTitle(m_repo.origin);
 
     //populate the repo section
@@ -163,7 +163,7 @@ void RepoDialog::on_btn_download_clicked()
     m_dler->startDownload(url, dlFile);
 }
 
-void RepoDialog::downloadComplete(bool success)
+void RepoDialog::downloadComplete(bool success, QString errMsg)
 {
     QMessageBox mb;
     if (success)
@@ -174,7 +174,7 @@ void RepoDialog::downloadComplete(bool success)
     else
     {
         mb.setText("Download failed! Please see log window");
-        Logger::log("Download failed");
+        Logger::log("Download failed: " + errMsg);
     }
     mb.setStandardButtons(QMessageBox::Ok);
     mb.exec();

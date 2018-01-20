@@ -29,7 +29,7 @@ private slots:
 
     void on_btn_download_clicked();
 
-    void downloadComplete(bool success);
+    void downloadComplete(bool success, QString errMsg);
 
     void on_txt_search_textChanged(const QString &arg1);
 
