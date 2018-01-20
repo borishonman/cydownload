@@ -34,6 +34,7 @@ typedef struct _Package
     QString author;
     QString website;
     QString depiction;
+    QString tags;
 public:
     static _Package null()
     {

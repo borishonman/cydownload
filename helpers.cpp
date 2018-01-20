@@ -50,7 +50,7 @@ bool helpers::decompress(QString inFile, QString outFile)
     oFile->close();
 
     delete oFile;
-    delete iFile;
+    //delete iFile;
 
     //return success
     return true;

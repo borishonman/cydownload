@@ -52,12 +52,14 @@ void RepoDialog::initialize(Repo repo, SectionList sections)
 void RepoDialog::on_tree_sections_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
     //if a section header was clicked, or the same item was clicked, do nothing
-    if (m_packageMap.find(current) == m_packageMap.end() || current == previous)
+    if (m_packageMap.find(current) == m_packageMap.end())
     {
         ui->txt_pkg_name->setText("");
         ui->txt_pkg_maintainer->setText("");
         ui->txt_pkg_description->textCursor().document()->setPlainText("");
         ui->cmb_pkg_version->setCurrentIndex(-1);
+        ui->btn_download->setText("Download .deb");
+        ui->btn_download->setEnabled(false);
         disablePackageInfoPanel();
         return;
     }
@@ -84,6 +86,17 @@ void RepoDialog::on_tree_sections_currentItemChanged(QTreeWidgetItem *current, Q
 
     //enable the download buttons
     enablePackageInfoPanel();
+
+    if (latestPackage.tags.contains("cydia::commercial"))
+    {
+        ui->btn_download->setText("Cannot download commercial packages!");
+        ui->btn_download->setEnabled(false);
+    }
+    else
+    {
+        ui->btn_download->setText("Download .deb");
+        ui->btn_download->setEnabled(true);
+    }
 }
 
 void RepoDialog::on_cmb_pkg_version_currentTextChanged(const QString &arg1)

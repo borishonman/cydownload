@@ -211,38 +211,41 @@ void MainWindow::repoInfoDownloaded()
             continue;
         }
 
-        QStringList list = line.split(":");
+        QRegExp rx("^(.*): (.*)");
+        rx.indexIn(line);
 
-        if (list.at(0).trimmed().toLower() == "package")
-            pkg.packageid = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "version")
-            pkg.version = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "section")
-            pkg.section = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "maintainer")
-            pkg.maintainer = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "depends")
-            pkg.depends = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "architecture")
-            pkg.architecture = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "filename")
-            pkg.filename = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "size")
-            pkg.size = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "installed-size")
-            pkg.installedsize = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "md5sum")
-            pkg.md5sum = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "description")
-            pkg.description = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "name")
-            pkg.name = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "author")
-            pkg.author = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "website")
-            pkg.website = list.at(1).trimmed();
-        else if (list.at(0).trimmed().toLower() == "depiction")
-            pkg.depiction = list.at(1).trimmed();
+        if (rx.cap(1).trimmed().toLower() == "package")
+            pkg.packageid = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "version")
+            pkg.version = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "section")
+            pkg.section = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "maintainer")
+            pkg.maintainer = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "depends")
+            pkg.depends = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "architecture")
+            pkg.architecture = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "filename")
+            pkg.filename = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "size")
+            pkg.size = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "installed-size")
+            pkg.installedsize = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "md5sum")
+            pkg.md5sum = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "description")
+            pkg.description = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "name")
+            pkg.name = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "author")
+            pkg.author = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "website")
+            pkg.website = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "depiction")
+            pkg.depiction = rx.cap(2).trimmed();
+        else if (rx.cap(1).trimmed().toLower() == "tag")
+            pkg.tags = rx.cap(2).trimmed();
     }
 
     //and close it
