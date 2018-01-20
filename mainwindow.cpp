@@ -304,6 +304,8 @@ void MainWindow::on_btn_new_repo_clicked()
     //add to the combo box
     ui->cmb_repo_urls->insertItem(ui->cmb_repo_urls->count(), m_dr->getText());
     ui->cmb_repo_urls->setCurrentIndex(ui->cmb_repo_urls->count()-1);
+    ui->btn_open_repo->setEnabled(true);
+    ui->btn_del_repo->setEnabled(true);
 
     //write it to the file
     helpers::addRepoToFile(m_dr->getText(), REPO_URL_FILE_PATH);
