@@ -105,15 +105,48 @@ void MainWindow::downloadComplete(bool success, QString errMsg)
     case PACKAGES_DEBIAN:
         if (!success)
         {
-            Logger::log(errMsg);
-            Logger::log("Not a valid Cydia repository!");
-            m_dling = NONE;
+            m_dling = PACKAGESGZ;
+            m_dl->startDownload(helpers::urlCombine(m_url, "Packages.gz"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.gz"));
             break;
         }
         //extract the Packages list
         if (!helpers::decompress(QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.bz2"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages")))
         {
             Logger::log("Error extracting Packages.bz2");
+            break;
+        }
+        Logger::log("Done");
+        repoInfoDownloaded();
+        m_dling = PACKAGE;
+        break;
+    case PACKAGESGZ:
+        if (!success)
+        {
+            m_dling = PACKAGESGZ_DEBIAN;
+            m_dl->startDownload(helpers::urlCombine(m_url, "dists/stable/main/binary-iphoneos-arm/Packages.gz"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.gz"));
+            break;
+        }
+        //extract the Packages list
+        if (!helpers::decompress(QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.gz"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages")))
+        {
+            Logger::log("Error extracting Packages.bz2");
+            break;
+        }
+        Logger::log("Done");
+        repoInfoDownloaded();
+        m_dling = PACKAGE;
+        break;
+    case PACKAGESGZ_DEBIAN:
+        if (!success)
+        {
+            Logger::log("Not a valid Cydia repository!");
+            m_dling = NONE;
+            break;
+        }
+        //extract the Packages list
+        if (!helpers::decompress(QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages.gz"), QDir::cleanPath(m_tmpDir.path() + QDir::separator() + "Packages")))
+        {
+            Logger::log("Error extracting Packages.gz");
             break;
         }
         Logger::log("Done");
@@ -260,6 +293,7 @@ void MainWindow::repoInfoDownloaded()
         if (m_sections[secName].find(m_packages[i].name) != m_sections[secName].end())
         { //package was already added
             m_sections[secName][m_packages[i].name][m_packages[i].version] = m_packages[i];
+            int t = m_sections[secName][m_packages[i].name].size();
         }
         else
         { //package was not already added, need to create a PackageVersions

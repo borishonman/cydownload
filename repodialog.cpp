@@ -40,6 +40,7 @@ void RepoDialog::initialize(Repo repo, SectionList sections)
         PackageList::iterator itt;
         for (itt = it->second.begin();itt != it->second.end();itt++)
         {
+            int t = itt->second.size();
             Package latestPackage = helpers::getLatestPackage(itt->second);
             QTreeWidgetItem *itm2 = new QTreeWidgetItem(QStringList(latestPackage.name + " (" + latestPackage.version + ")"));
             itm->insertChild(0, itm2);

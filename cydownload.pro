@@ -30,14 +30,29 @@ SOURCES += \
     helpers.cpp \
     downloader.cpp \
     logger.cpp \
+    repodialog.cpp \
+    zlib/adler32.c \
+    zlib/compress.c \
+    zlib/crc32.c \
+    zlib/deflate.c \
+    zlib/gzclose.c \
+    zlib/gzlib.c \
+    zlib/gzread.c \
+    zlib/gzwrite.c \
+    zlib/infback.c \
+    zlib/inffast.c \
+    zlib/inflate.c \
+    zlib/inftrees.c \
+    zlib/trees.c \
+    zlib/uncompr.c \
+    zlib/zutil.c \
     bzip2/blocksort.c \
     bzip2/bzlib.c \
-    bzip2/compress.c \
     bzip2/crctable.c \
     bzip2/decompress.c \
     bzip2/huffman.c \
     bzip2/randtable.c \
-    repodialog.cpp
+    bzip2/bzcompress.c
 
 HEADERS += \
         mainwindow.h \
@@ -45,10 +60,21 @@ HEADERS += \
     helpers.h \
     downloader.h \
     logger.h \
-    bzip2/bzlib.h \
-    bzip2/bzlib_private.h \
     types.h \
-    repodialog.h
+    repodialog.h \
+    zlib/crc32.h \
+    zlib/deflate.h \
+    zlib/gzguts.h \
+    zlib/inffast.h \
+    zlib/inffixed.h \
+    zlib/inflate.h \
+    zlib/inftrees.h \
+    zlib/trees.h \
+    zlib/zconf.h \
+    zlib/zlib.h \
+    zlib/zutil.h \
+    bzip2/bzlib.h \
+    bzip2/bzlib_private.h
 
 FORMS += \
         mainwindow.ui \

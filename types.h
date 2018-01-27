@@ -69,7 +69,9 @@ struct strVerCmp {
         QString A = a;
         QString B = b;
         A.remove(".");
+        A.remove("-");
         B.remove(".");
+        B.remove("-");
         return atof(A.toStdString().c_str()) < atof(B.toStdString().c_str());
     }
 };

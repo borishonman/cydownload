@@ -105,5 +105,6 @@ QNetworkRequest Downloader::getRequest(QUrl url)
     req.setRawHeader("X-Unique-ID", "8843d7f92416211de9ebb963ff4ce28125932878");
     req.setRawHeader("X-Firmware", "10.1.1");
     req.setRawHeader("User-Agent", "Telesphoreo APT-HTTP/1.0.592");
+    //req.setSslConfiguration(QSslConfiguration::defaultConfiguration());
     return req;
 }
