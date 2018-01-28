@@ -155,12 +155,9 @@ Package helpers::getLatestPackage(PackageVersions packageVers)
     PackageVersions::iterator it;
     for (it=packageVers.begin();it != packageVers.end(); it++)
     {
-        QString curVer = it->first;
         QString maxVer = ret.version;
-        curVer.remove(".");
-        maxVer.remove(".");
-        float ver = atof(curVer.toStdString().c_str());
-        if (ver > atof(maxVer.toStdString().c_str()))
+        float ver = helpers::numberize(it->first);
+        if (ver > helpers::numberize(maxVer))
             ret = it->second;
     }
 
@@ -229,4 +226,17 @@ void helpers::delRepoFromFile(QString url, QString file)
 
     //close the file
     f.close();
+}
+
+int helpers::numberize (QString str)
+{
+    QString s = str;
+    const char* cstr = str.toStdString().c_str();
+    char* tmp;
+    for (unsigned long i=0;i<strlen(cstr);i++)
+    {
+        if (cstr[i] != '0' && strtol(&(cstr[i]), &tmp, 10) == 0)
+            s.remove(i, 1);
+    }
+    return atoi(s.toStdString().c_str());
 }

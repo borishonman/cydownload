@@ -19,6 +19,7 @@ public:
     static QString bytesToHuman(qint64 sz);
     static void addRepoToFile(QString url, QString file);
     static void delRepoFromFile(QString url, QString file);
+    static int numberize (QString str);
 private:
     static bool decompress_bz2(QString inFile, QString outFile);
     static bool decompress_gz(QString inFile, QString outFile);

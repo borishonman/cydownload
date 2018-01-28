@@ -40,7 +40,6 @@ void RepoDialog::initialize(Repo repo, SectionList sections)
         PackageList::iterator itt;
         for (itt = it->second.begin();itt != it->second.end();itt++)
         {
-            int t = itt->second.size();
             Package latestPackage = helpers::getLatestPackage(itt->second);
             QTreeWidgetItem *itm2 = new QTreeWidgetItem(QStringList(latestPackage.name + " (" + latestPackage.version + ")"));
             itm->insertChild(0, itm2);
@@ -159,6 +158,7 @@ void RepoDialog::on_btn_download_clicked()
     QString url = "";
     for (it=clickedPackage.begin();it != clickedPackage.end();it++)
     {
+        Logger::log("Checking "+it->first+" against "+ui->cmb_pkg_version->currentText());
         if (it->first == ui->cmb_pkg_version->currentText())
         {
             //found it! get the package filename

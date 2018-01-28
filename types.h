@@ -64,19 +64,7 @@ struct strCmp {
     }
 };
 
-struct strVerCmp {
-    bool operator()(QString const &a, QString const &b) const {
-        QString A = a;
-        QString B = b;
-        A.remove(".");
-        A.remove("-");
-        B.remove(".");
-        B.remove("-");
-        return atof(A.toStdString().c_str()) < atof(B.toStdString().c_str());
-    }
-};
-
-typedef std::map<QString, Package, strVerCmp> PackageVersions;
+typedef std::map<QString, Package> PackageVersions;
 typedef std::map<QString, PackageVersions, strCmp> PackageList;
 typedef std::map<QString, PackageList, strCmp> SectionList;
 

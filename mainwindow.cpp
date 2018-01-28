@@ -293,7 +293,6 @@ void MainWindow::repoInfoDownloaded()
         if (m_sections[secName].find(m_packages[i].name) != m_sections[secName].end())
         { //package was already added
             m_sections[secName][m_packages[i].name][m_packages[i].version] = m_packages[i];
-            int t = m_sections[secName][m_packages[i].name].size();
         }
         else
         { //package was not already added, need to create a PackageVersions
